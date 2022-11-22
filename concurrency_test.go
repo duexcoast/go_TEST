@@ -7,10 +7,7 @@ import (
 )
 
 func mockWebsiteChecker(url string) bool {
-	if url == "waat://furhurterwe.geds" {
-		return false
-	}
-	return true
+	return url != "waat://furhurterwe.geds" 
 }
 
 func TestCheckWebsites(t *testing.T) {
@@ -29,7 +26,7 @@ func TestCheckWebsites(t *testing.T) {
 	got := CheckWebsites(mockWebsiteChecker, websites)
 
 	if !reflect.DeepEqual(want, got) {
-		t.Fatalf("Wanted %v got %v", want, got)
+		t.Fatalf("Wanted  %v got %v", want, got)
 	}
 }
 
