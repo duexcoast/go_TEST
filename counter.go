@@ -3,6 +3,7 @@ package main
 import "sync"
 
 type Counter struct {
+	// sync.Mutex allows us to add locks to our data
 	mu sync.Mutex
 	value int
 }
