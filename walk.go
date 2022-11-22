@@ -7,6 +7,13 @@ func Walk(x interface{}, fn func(input string)) {
 
 	val := getValue(x)
 
+	if val.Kind() == reflect.Slice {
+		for i := 0; i < val.Len(); i++ {
+			Walk(val.Index(i).Interface(), fn)
+		}
+		return
+	}
+
 	for i := 0; i < val.NumField(); i++ {
 		field := val.Field(i)
 
@@ -22,7 +29,7 @@ func Walk(x interface{}, fn func(input string)) {
 func getValue(x interface{}) reflect.Value {
 	val := reflect.ValueOf(x)
 
-	// you can use NumField on a pointer value, so we have to use
+	// you can use NumField on a pointer, so we have to use
 	// an if statement outside of the loop
 	if val.Kind() == reflect.Pointer {
 		// Elem() returns the value than an interface contains or a pointer points to
