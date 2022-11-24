@@ -1,34 +1,60 @@
 package main
 
 import (
+	"context"
+	"errors"
+	"log"
+	"net/http"
 	"testing"
 	"time"
 )
 
 type SpyStore struct {
 	response string	
-	cancelled bool
 	t *testing.T
 }
 
-func (s *SpyStore) assertWasCancelled() {
-	s.t.Helper()
-	if !s.cancelled {
-		s.t.Errorf("store was not told to cancel")
-	}
-}
-func (s *SpyStore) assertWasNotCancelled() {
-	s.t.Helper()
-	if s.cancelled {
-		s.t.Errorf("store was told to cancel")
-	}
+// We're creating a SpyResponseWriter type that implements 
+// http.ResponseWriter: with Header(), Write(), WriteHeader()
+type SpyResponseWriter struct {
+	written bool
 }
 
-func (s *SpyStore) Fetch() string {
-	time.Sleep(100 * time.Millisecond)
-	return s.response
+func (s *SpyResponseWriter) Header() http.Header {
+	s.written = true
+	return nil
 }
 
-func (s *SpyStore) Cancel() {
-	s.cancelled = true
+func (s *SpyResponseWriter) Write([]byte) (int, error) {
+	s.written = true
+	return 0, errors.New("not implemented")
+}
+
+func (s *SpyResponseWriter) WriteHeader(statusCode int) {
+	s.written = true
+}
+
+func (s *SpyStore) Fetch(ctx context.Context) (string, error) {
+	data := make(chan string, 1)
+
+	go func() {
+		var result string
+		for _, c := range s.response {
+			select {
+			case <- ctx.Done():
+				log.Println("spy store got cancelled")
+				return
+			default:
+				time.Sleep(10 * time.Millisecond)
+				result += string(c)
+			}
+		}
+		data <- result
+	}()
+	select {
+	case <- ctx.Done():
+		return "", ctx.Err()
+	case res := <- data:
+		return res, nil
+	}
 }

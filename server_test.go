@@ -28,9 +28,9 @@ func TestServer(t *testing.T) {
 		svr.ServeHTTP(response, request)
 
 		if response.Body.String() != data {
-			t.Errorf("want %s got %s", data, response.Body.String())
+			t.Errorf(`want "%s" got "%s"`, data, response.Body.String())
 		}
-		store.assertWasNotCancelled()
+
 	})
 	t.Run("tells store to cancel work if request is cancelled", func(t *testing.T) {
 		data := "hello world"
@@ -43,10 +43,14 @@ func TestServer(t *testing.T) {
 		time.AfterFunc(5*time.Millisecond, cancel)
 		request = request.WithContext(cancellingCtx)
 
-		response := httptest.NewRecorder()
+		response := &SpyResponseWriter{}
 		
 		svr.ServeHTTP(response, request)
 
-		store.assertWasCancelled()
+		if response.written{
+			t.Error("a response should not have been written")
+		}
+
+
 	})
 }
