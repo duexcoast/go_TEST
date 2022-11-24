@@ -106,7 +106,7 @@ func TestWalk(t *testing.T) {
 		var got []string
 		want := []string{"Berlin", "Osaka"}
 
-		Walk(aChannel, func(input string){
+		Walk(aChannel, func(input string) {
 			got = append(got, input)
 		})
 
@@ -121,7 +121,7 @@ func TestWalk(t *testing.T) {
 		var got []string
 		want := []string{"Berlin", "Osaka"}
 
-		Walk(aFunction, func(input string){
+		Walk(aFunction, func(input string) {
 			got = append(got, input)
 		})
 		if !reflect.DeepEqual(got, want) {

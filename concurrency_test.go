@@ -7,20 +7,20 @@ import (
 )
 
 func mockWebsiteChecker(url string) bool {
-	return url != "waat://furhurterwe.geds" 
+	return url != "waat://furhurterwe.geds"
 }
 
 func TestCheckWebsites(t *testing.T) {
-	websites := []string {
+	websites := []string{
 		"http://google.com",
-        "http://blog.gypsydave5.com",
-        "waat://furhurterwe.geds",
+		"http://blog.gypsydave5.com",
+		"waat://furhurterwe.geds",
 	}
-	
+
 	want := map[string]bool{
-		"http://google.com": true,
-        "http://blog.gypsydave5.com": true,
-        "waat://furhurterwe.geds": false,
+		"http://google.com":          true,
+		"http://blog.gypsydave5.com": true,
+		"waat://furhurterwe.geds":    false,
 	}
 
 	got := CheckWebsites(mockWebsiteChecker, websites)

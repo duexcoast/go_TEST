@@ -1,10 +1,11 @@
 package main
 
-type WebsiteChecker func(string) bool 
+type WebsiteChecker func(string) bool
 type result struct {
 	string
 	bool
 }
+
 func CheckWebsites(wc WebsiteChecker, urls []string) map[string]bool {
 	results := make(map[string]bool)
 	resultChannel := make(chan result)
@@ -15,7 +16,7 @@ func CheckWebsites(wc WebsiteChecker, urls []string) map[string]bool {
 		}(url)
 	}
 	for i := 0; i < len(urls); i++ {
-		r := <- resultChannel
+		r := <-resultChannel
 		results[r.string] = r.bool
 	}
 

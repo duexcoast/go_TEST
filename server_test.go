@@ -44,13 +44,12 @@ package main
 // 		request = request.WithContext(cancellingCtx)
 
 // 		response := &SpyResponseWriter{}
-		
+
 // 		svr.ServeHTTP(response, request)
 
 // 		if response.written{
 // 			t.Error("a response should not have been written")
 // 		}
-
 
 // 	})
 // }

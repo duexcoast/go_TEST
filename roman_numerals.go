@@ -7,13 +7,24 @@ type RomanNumeral struct {
 	Symbol string
 }
 
+type RomanNumerals []RomanNumeral
+
+func (r RomanNumerals) ValueOf(symbol string) int {
+	for _, s := range r {
+		if s.Symbol == symbol {
+			return s.Value
+		}
+	}
+	return 0
+}
+
 // declaring rules about roman numerals as data,
 // rather than hiding them inside a switch / case
 // inside of the algorithm.
 // switch statements should normally be a red flag that we might
 // be capturing a concept or data inside imperative code, when
 // it might be better captured in a class structure instead.
-var AllRomanNumerals = []RomanNumeral{
+var allRomanNumerals = RomanNumerals{
 	{1000, "M"},
 	{900, "CM"},
 	{500, "D"},
@@ -33,7 +44,7 @@ func ConvertToRoman(arabic int) string {
 
 	var result strings.Builder
 
-	for _, numeral := range AllRomanNumerals {
+	for _, numeral := range allRomanNumerals {
 		for arabic >= numeral.Value {
 			result.WriteString(numeral.Symbol)
 			arabic -= numeral.Value
@@ -41,4 +52,34 @@ func ConvertToRoman(arabic int) string {
 	}
 
 	return result.String()
+}
+
+func ConvertToArabic(roman string) int {
+	total := 0
+
+	for i := 0; i < len(roman); i++ {
+		symbol := roman[i]
+
+		// look ahead to the next symbol, if we can & the current symbol is base 10 (only valid subtractors)
+		if i + 1 < len(roman) && symbol == 'I' {
+			nextSymbol := roman[i +1]
+
+			// build the two character string
+			potentialNumber := string([]byte{symbol, nextSymbol})
+
+			// get the value of the two character string
+			value := allRomanNumerals.ValueOf(potentialNumber)
+
+			if value != 0 {
+				total += value
+				i++ // move past this character for the next loop
+			} else {
+				total++
+			}
+		} else {
+			total++
+		}
+	}
+	return total
+
 }

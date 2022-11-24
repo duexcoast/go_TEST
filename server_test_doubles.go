@@ -5,16 +5,14 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"testing"
 	"time"
 )
 
 type SpyStore struct {
-	response string	
-	t *testing.T
+	response string
 }
 
-// We're creating a SpyResponseWriter type that implements 
+// We're creating a SpyResponseWriter type that implements
 // http.ResponseWriter: with Header(), Write(), WriteHeader()
 type SpyResponseWriter struct {
 	written bool
@@ -41,7 +39,7 @@ func (s *SpyStore) Fetch(ctx context.Context) (string, error) {
 		var result string
 		for _, c := range s.response {
 			select {
-			case <- ctx.Done():
+			case <-ctx.Done():
 				log.Println("spy store got cancelled")
 				return
 			default:
@@ -52,9 +50,9 @@ func (s *SpyStore) Fetch(ctx context.Context) (string, error) {
 		data <- result
 	}()
 	select {
-	case <- ctx.Done():
+	case <-ctx.Done():
 		return "", ctx.Err()
-	case res := <- data:
+	case res := <-data:
 		return res, nil
 	}
 }

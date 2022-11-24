@@ -18,7 +18,7 @@ func TestCounter(t *testing.T) {
 		wantedCount := 1000
 		counter := newCounter()
 
-		// sync.WaitGroup allows us to wait for goroutines to finish jobs. 
+		// sync.WaitGroup allows us to wait for goroutines to finish jobs.
 		var wg sync.WaitGroup
 		wg.Add(wantedCount)
 

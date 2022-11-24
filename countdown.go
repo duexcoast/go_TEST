@@ -16,10 +16,10 @@ type Sleeper interface {
 
 type ConfigurableSleeper struct {
 	duration time.Duration
-	sleep func (time.Duration)
+	sleep    func(time.Duration)
 }
 
-func  (c *ConfigurableSleeper) Sleep() {
+func (c *ConfigurableSleeper) Sleep() {
 	c.sleep(c.duration)
 }
 
@@ -51,7 +51,7 @@ type SpySleeper struct {
 	Calls int
 }
 
-func(s *SpySleeper) Sleep() {
+func (s *SpySleeper) Sleep() {
 	s.Calls++
 }
 
